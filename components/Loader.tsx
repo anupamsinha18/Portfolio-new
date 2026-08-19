@@ -128,8 +128,8 @@ export default function Loader({ onComplete }: LoaderProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
-  const [currentLogs, setCurrentLogs] = useState<string[]>([]);
-  const logIndexRef = useRef(0);
+  const [currentLogs, setCurrentLogs] = useState<string[]>([LOG_MESSAGES[0]]);
+  const logIndexRef = useRef(1);
   const onCompleteRef = useRef(onComplete);
   onCompleteRef.current = onComplete;
 
@@ -154,49 +154,48 @@ export default function Loader({ onComplete }: LoaderProps) {
     };
 
     const ctx = gsap.context(() => {
+      const progressObj = { val: 0 };
+
       // Timeline for percentage loading
       const tl = gsap.timeline({
         onComplete: finishLoading
       });
 
       // Animate progress number state
-      tl.to(
-        { val: 0 },
-        {
-          val: 100,
-          duration: 2.8,
-          ease: "power2.out",
-          onUpdate: function () {
-            const currentVal = Math.floor(this.targets()[0].val);
-            setProgress(currentVal);
-            
-            // Sync progress bar width
-            if (progressBarRef.current) {
-              progressBarRef.current.style.width = `${currentVal}%`;
+      tl.to(progressObj, {
+        val: 100,
+        duration: 2.5,
+        ease: "power2.out",
+        onUpdate: () => {
+          const currentVal = Math.floor(progressObj.val);
+          setProgress(currentVal);
+
+          // Sync progress bar width
+          if (progressBarRef.current) {
+            progressBarRef.current.style.width = `${currentVal}%`;
+          }
+
+          // Sync console log messages based on progress percentage
+          const expectedLogIndex = Math.min(
+            LOG_MESSAGES.length - 1,
+            Math.floor((currentVal / 100) * LOG_MESSAGES.length)
+          );
+
+          if (expectedLogIndex >= logIndexRef.current) {
+            const logsToAdd: string[] = [];
+            for (let i = logIndexRef.current; i <= expectedLogIndex; i++) {
+              logsToAdd.push(LOG_MESSAGES[i]);
             }
-
-            // Sync console log messages based on progress percentage
-            const expectedLogIndex = Math.min(
-              LOG_MESSAGES.length - 1,
-              Math.floor((currentVal / 100) * LOG_MESSAGES.length)
-            );
-
-            if (expectedLogIndex >= logIndexRef.current) {
-              const logsToAdd: string[] = [];
-              for (let i = logIndexRef.current; i <= expectedLogIndex; i++) {
-                logsToAdd.push(LOG_MESSAGES[i]);
-              }
-              if (logsToAdd.length > 0) {
-                setCurrentLogs((prev) => {
-                  const nextLogs = [...prev, ...logsToAdd];
-                  return nextLogs.slice(-3); // keep only last 3 logs
-                });
-                logIndexRef.current = expectedLogIndex + 1;
-              }
+            if (logsToAdd.length > 0) {
+              setCurrentLogs((prev) => {
+                const nextLogs = [...prev, ...logsToAdd];
+                return nextLogs.slice(-3); // keep only last 3 logs
+              });
+              logIndexRef.current = expectedLogIndex + 1;
             }
           }
         }
-      );
+      });
     });
 
     // Safety fallback timer to guarantee loader dismissal after 3.8s maximum
