@@ -212,16 +212,16 @@ const PROJECTS_DATA: ProjectData[] = [
     description: "A production-grade AI conversation interface replicating Google Gemini. Integrated the Nvidia Nemotron LLM via OpenRouter. Utilized advanced Context API designs to optimize React render patterns.",
     image: geminiImg,
     tags: ["React.js", "OpenRouter API", "Context API", "Nvidia Nemotron"],
-    github: "https://github.com",
-    live: "https://google.com"
+    github: "https://github.com/anupamsinha18/Gemniclone",
+    live: "https://clone-geminii.netlify.app/"
   },
   {
     title: "HRMS Lite (Human Resource Management)",
     description: "A modular, responsive employee management system designed with FastAPIs and React. Implemented real-time check-in and attendance metrics utilizing MongoDB for safe document persistence and error logs.",
     image: hrmsImg,
     tags: ["React.js", "FastAPI", "MongoDB", "REST APIs"],
-    github: "https://github.com",
-    live: "https://google.com"
+    github: "https://github.com/anupamsinha18/hrms",
+    live: "https://imaginative-macaron-d13858.netlify.app/"
   }
 ];
 
