@@ -4,8 +4,10 @@ import React, { useEffect, useRef } from "react";
 import styled from "@emotion/styled";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import { ExternalLink } from "lucide-react";
+import geminiImg from "@/public/images/gemini.png";
+import hrmsImg from "@/public/images/hrms.png";
 
 const GithubIcon = ({ size = 16, ...props }: React.SVGProps<SVGSVGElement> & { size?: number }) => (
   <svg
@@ -198,7 +200,7 @@ const ActionButton = styled.a`
 interface ProjectData {
   title: string;
   description: string;
-  image: string;
+  image: StaticImageData | string;
   tags: string[];
   github: string;
   live: string;
@@ -208,7 +210,7 @@ const PROJECTS_DATA: ProjectData[] = [
   {
     title: "AI Chat Application (Gemini Clone)",
     description: "A production-grade AI conversation interface replicating Google Gemini. Integrated the Nvidia Nemotron LLM via OpenRouter. Utilized advanced Context API designs to optimize React render patterns.",
-    image: "/images/gemini.png",
+    image: geminiImg,
     tags: ["React.js", "OpenRouter API", "Context API", "Nvidia Nemotron"],
     github: "https://github.com",
     live: "https://google.com"
@@ -216,7 +218,7 @@ const PROJECTS_DATA: ProjectData[] = [
   {
     title: "HRMS Lite (Human Resource Management)",
     description: "A modular, responsive employee management system designed with FastAPIs and React. Implemented real-time check-in and attendance metrics utilizing MongoDB for safe document persistence and error logs.",
-    image: "/images/hrms.png",
+    image: hrmsImg,
     tags: ["React.js", "FastAPI", "MongoDB", "REST APIs"],
     github: "https://github.com",
     live: "https://google.com"

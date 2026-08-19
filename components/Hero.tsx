@@ -5,6 +5,7 @@ import styled from "@emotion/styled";
 import { gsap } from "gsap";
 import Image from "next/image";
 import StatusWidget from "./StatusWidget";
+import profileImg from "@/public/images/profile.jpg";
 
 const HeroSection = styled.section`
   position: relative;
@@ -334,7 +335,7 @@ export default function Hero() {
         <CenterCardWrapper ref={cardRef}>
           <PortraitCard>
             <Image
-              src="/images/profile.jpg"
+              src={profileImg}
               alt="Anupam Sinha Profile"
               fill
               priority
@@ -346,9 +347,7 @@ export default function Hero() {
             NEXT.JS SPECIALIST
           </OverlayBadge>
 
-          <OverlayBadge bottom="-20px" right="-40px" className="overlay-badge overlay-badge-2">
-            LIGHTHOUSE SCORE: 93+
-          </OverlayBadge>
+         
         </CenterCardWrapper>
       </MainContent>
 
