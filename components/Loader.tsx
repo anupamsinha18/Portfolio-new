@@ -130,20 +130,33 @@ export default function Loader({ onComplete }: LoaderProps) {
   const [progress, setProgress] = useState(0);
   const [currentLogs, setCurrentLogs] = useState<string[]>([]);
   const logIndexRef = useRef(0);
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
 
   useEffect(() => {
+    let completed = false;
+
+    const finishLoading = () => {
+      if (completed) return;
+      completed = true;
+      if (containerRef.current) {
+        gsap.to(containerRef.current, {
+          y: "-100%",
+          duration: 1,
+          ease: "power4.inOut",
+          onComplete: () => {
+            onCompleteRef.current();
+          }
+        });
+      } else {
+        onCompleteRef.current();
+      }
+    };
+
     const ctx = gsap.context(() => {
       // Timeline for percentage loading
       const tl = gsap.timeline({
-        onComplete: () => {
-          // Slide up exit animation
-          gsap.to(containerRef.current, {
-            y: "-100%",
-            duration: 1.2,
-            ease: "power4.inOut",
-            onComplete: onComplete
-          });
-        }
+        onComplete: finishLoading
       });
 
       // Animate progress number state
@@ -151,7 +164,7 @@ export default function Loader({ onComplete }: LoaderProps) {
         { val: 0 },
         {
           val: 100,
-          duration: 3.5,
+          duration: 2.8,
           ease: "power2.out",
           onUpdate: function () {
             const currentVal = Math.floor(this.targets()[0].val);
@@ -186,8 +199,16 @@ export default function Loader({ onComplete }: LoaderProps) {
       );
     });
 
-    return () => ctx.revert();
-  }, [onComplete]);
+    // Safety fallback timer to guarantee loader dismissal after 3.8s maximum
+    const safetyTimer = setTimeout(() => {
+      finishLoading();
+    }, 3800);
+
+    return () => {
+      clearTimeout(safetyTimer);
+      ctx.revert();
+    };
+  }, []);
 
   // Format progress to always show 3 digits (e.g. 009, 045, 100)
   const formattedProgress = String(progress).padStart(3, "0");
